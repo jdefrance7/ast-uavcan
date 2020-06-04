@@ -10,6 +10,11 @@
 #define AST_UAVCAN_H
 
 //------------------------------------------------------------------------------
+// Arduino Support Library
+
+#include <Arduino.h>
+
+//------------------------------------------------------------------------------
 // AST CAN Driver Library
 
 #include <ASTCanLib.h>
@@ -34,19 +39,19 @@ typedef GetNodeInfo
   HardwareVersion hardware_version;
   uint8_t name[80];
 */
-UAVCAN_NODE;
+UAVCAN_Node;
 
 //------------------------------------------------------------------------------
 // UAVCAN Driver Class & Configs
 
 #define CANARD_MEMORY_POOL_SIZE 1024
 
-class UAVCAN_DRIVER
+class UAVCAN_Driver
 {
 public:
 
   // Constructor
-  UAVCAN_DRIVER();
+  UAVCAN_Driver();
 
   // ID setter/getter
   int setId(uint8_t id);
@@ -84,12 +89,6 @@ private:
 
   // CAN bitrate
   long _bitrate;
-
-  // Callback flag
-  bool _callbacks;
-
-  // Ready flag
-  bool _ready;
 
   // Canard library instance
   CanardInstance _canard;

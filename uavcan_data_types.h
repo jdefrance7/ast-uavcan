@@ -91,7 +91,7 @@ typedef struct
 {
   uint8_t gimbal_id;
   uint8_t mode;
-  float quaterion_xyzw[4];
+  float quaternion_xyzw[4];
 } AngularCommand;
 
 //------------------------------------------------------------------------------
