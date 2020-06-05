@@ -1,15 +1,21 @@
-//------------------------------------------------------------------------------
+//##############################################################################
 // File Information
+//##############################################################################
 
 
 
-//------------------------------------------------------------------------------
+
+//##############################################################################
 // Header Files
+//##############################################################################
+
 
 #include "ast-uavcan.h"
 
-//------------------------------------------------------------------------------
+//##############################################################################
 // Function Definitions
+//##############################################################################
+
 
 UAVCAN_Driver::UAVCAN_Driver()
 {
@@ -30,6 +36,7 @@ uint8_t UAVCAN_Driver::getId()
 
 int UAVCAN_Driver::setBitrate(long bitrate)
 {
+  if(bitrate <= 0){return -1;}
   _bitrate = bitrate;
   return 0;
 }
@@ -49,23 +56,36 @@ int UAVCAN_Driver::setCallbacks(CanardOnTransferReception on_reception, CanardSh
       should_accept,
       NULL
   );
-
   return 0;
 }
 
 int UAVCAN_Driver::begin()
 {
-  canardSetLocalNodeID(&_canard, _id);
-
+  // Bitrate must be positive
+  if(_bitrate == 0)
+  {
+    return -1;
+  }
+  // Allow for dynamic node allocation
+  if(_id != 0)
+  {
+    canardSetLocalNodeID(&_canard, _id);
+  }
+  // Start the CAN module
   canInit(_bitrate);
 
   return 0;
 }
 
-int UAVCAN_Driver::clean(uint64_t timestamp)
+int UAVCAN_Driver::clean(uint64_t timestamp_us)
 {
-  canardCleanupStaleTransfers(&_canard, timestamp);
+  canardCleanupStaleTransfers(&_canard, timestamp_us);
+  return 0;
+}
 
+int UAVCAN_Driver::stats(CanardPoolAllocatorStatistics* stats)
+{
+  *stats = canardGetPoolAllocatorStatistics(&_canard);
   return 0;
 }
 
@@ -73,6 +93,38 @@ int UAVCAN_Driver::poll()
 {
   CanardCANFrame rxf;
   return _readFrame(&rxf);
+}
+
+int UAVCAN_Driver::poll(CanardCANFrame* rxf)
+{
+  return _readFrame(rxf);
+}
+
+int UAVCAN_Driver::broadcast(
+  uint64_t data_type_signature,
+  uint16_t data_type_id,
+  uint8_t* inout_transfer_id,
+  uint8_t priority,
+  const void* payload,
+  uint16_t payload_len
+)
+{
+  // Format and push message frame(s) onto Canard queue
+  int16_t broadcast = canardBroadcast(
+    &_canard,
+    data_type_signature,
+    data_type_id,
+    inout_transfer_id,
+    priority,
+    payload,
+    payload_len
+  );
+
+  // Return code if error
+  if(broadcast < 0){return broadcast;}
+
+  // Transmit Canard queue
+  return _sendQueue();
 }
 
 int UAVCAN_Driver::broadcast(NodeStatus* node_status)
@@ -110,10 +162,8 @@ int UAVCAN_Driver::broadcast(NodeStatus* node_status)
     sizeof(data)
   );
 
-  if(broadcast < 0)
-  {
-    return broadcast;
-  }
+  // Return code if error
+  if(broadcast < 0){return broadcast;}
 
   // Transmit Canard queue
   return _sendQueue();
@@ -153,9 +203,6 @@ int UAVCAN_Driver::broadcast(AngularCommand* angular_command)
   canardEncodeScalar(data, bit_offset, 16, &quaternion_xyzw[3]);
   bit_offset += 16;
 
-  // Dynamic payload length in bytes (rounded up)
-  uint16_t payload_length = (bit_offset + 7) / 8;
-
   // Format and push message frame(s) onto Canard queue
   int16_t broadcast = canardBroadcast(
     &_canard,
@@ -164,13 +211,42 @@ int UAVCAN_Driver::broadcast(AngularCommand* angular_command)
     &angular_command_transfer_id,
     CANARD_TRANSFER_PRIORITY_MEDIUM,
     data,
-    ANGULAR_COMMAND_DATA_TYPE_MAX_SIZE/8
+    sizeof(data)
   );
 
-  if(broadcast < 0)
-  {
-    return broadcast;
-  }
+  // Return code if error
+  if(broadcast < 0){return broadcast;}
+
+  // Transmit Canard queue
+  return _sendQueue();
+}
+
+int UAVCAN_Driver::service(
+  uint8_t destination_node_id,
+  uint64_t data_type_signature,
+  uint8_t data_type_id,
+  uint8_t* inout_transfer_id,
+  uint8_t priority,
+  CanardRequestResponse kind,
+  const void* payload,
+  uint16_t payload_len
+)
+{
+  // Format and push message frame(s) onto Canard queue
+  int val = canardRequestOrRespond(
+    &_canard,
+    destination_node_id,
+    data_type_signature,
+    data_type_id,
+    inout_transfer_id,
+    priority,
+    kind,
+    payload,
+    payload_len
+  );
+
+  // Return code if error
+  if(val < 0){return val;}
 
   // Transmit Canard queue
   return _sendQueue();
@@ -184,7 +260,7 @@ int UAVCAN_Driver::service(GetNodeInfo* get_node_info, CanardRequestResponse kin
   if(kind == CanardRequest)
   {
     // Format and push message frame(s) onto Canard queue
-    canardRequestOrRespond(
+    int request = canardRequestOrRespond(
       &_canard,
       remote_node_id,
       GET_NODE_INFO_DATA_TYPE_SIGNATURE,
@@ -196,8 +272,11 @@ int UAVCAN_Driver::service(GetNodeInfo* get_node_info, CanardRequestResponse kin
       0
     );
 
+    // Return code if error
+    if(request < 0){return request;}
+
     // Transmit Canard queue
-    _sendQueue();
+    return _sendQueue();
   }
   else if(kind == CanardResponse)
   {
@@ -253,11 +332,11 @@ int UAVCAN_Driver::service(GetNodeInfo* get_node_info, CanardRequestResponse kin
       if(get_node_info->name[i] == 0){break;}
     }
 
-    // Payload length in bytes (rounded up)
+    // Dynamic payload length in bytes (rounded up)
     uint16_t payload_length = (bit_offset + 7) / 8;
 
     // Format and push message frame(s) onto Canard queue
-    canardRequestOrRespond(
+    int response = canardRequestOrRespond(
       &_canard,
       remote_node_id,
       GET_NODE_INFO_DATA_TYPE_SIGNATURE,
@@ -269,18 +348,18 @@ int UAVCAN_Driver::service(GetNodeInfo* get_node_info, CanardRequestResponse kin
       payload_length
     );
 
+    // Return code if error
+    if(response < 0){return response;}
+
     // Transmit Canard queue
-    _sendQueue();
-  }
-  else
-  {
-    return -1;
+    return _sendQueue();
   }
 
-  return 0;
+  // Not a request or response
+  return -1;
 }
 
-int UAVCAN_Driver::_sendFrame(CanardCANFrame* txf)
+int UAVCAN_Driver::_sendFrame(const CanardCANFrame* txf)
 {
   // CAN message object
   st_cmd_t txMsg;
@@ -346,20 +425,14 @@ int UAVCAN_Driver::_readFrame(CanardCANFrame* rxf)
   time = millis();
   while(can_cmd(&rxMsg) != CAN_CMD_ACCEPTED)
   {
-    if(millis() - time > 1000)
-    {
-      return -1;
-    }
+    if(millis() - time > 1000){return -1;}
   }
 
   // Wait for command to finish executing
   time = millis();
   while(can_get_status(&rxMsg) == CAN_STATUS_NOT_COMPLETED)
   {
-    if(millis() - time > 1000)
-    {
-      return -1;
-    }
+    if(millis() - time > 1000){return -1;}
   }
 
   // Get message ID
@@ -378,25 +451,23 @@ int UAVCAN_Driver::_readFrame(CanardCANFrame* rxf)
 
 int UAVCAN_Driver::_sendQueue()
 {
-  // Return value from send frame
-  int reVal;
+  // Frames sent
   int frames = 0;
 
-  // Iterate through Canard queue
-  for(CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&_canard)) != NULL;)
+  // Iterate through Canard frame queue
+  for(const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&_canard)) != NULL;)
   {
-    // Send CAN frame
-    reVal = _sendFrame(txf);
+    // Send frame
+    int reVal = _sendFrame(txf);
 
-    // Success
+    // Success, remove frame from Canard queue
     if(reVal == CANARD_OK)
     {
-      // Remove frame from Canard queue
       canardPopTxQueue(&_canard);
       frames++;
     }
 
-    // Failure
+    // Failure, return error code
     else
     {
       return reVal;
