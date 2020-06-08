@@ -60,7 +60,7 @@ Broadcasts can be sent in two ways:
 
 #### 1. Generic
 
-Using the generic broadcast function. Please note that the inout_transfer_id must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
+Using the generic broadcast function. Please note that the `inout_transfer_id` must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
 
 ```c
 int broadcast(
@@ -75,7 +75,7 @@ int broadcast(
 
 #### 2. Specific
 
-Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all data type transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`, though this can be changed in their respective functions.
+Using a specific broadcast function. Please note that this function handles declaring and defining the static `inout_transfer_id` variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all data type transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`, though this can be changed in their respective functions.
 
 ```c
 int broadcast(NodeStatus* node_status);
