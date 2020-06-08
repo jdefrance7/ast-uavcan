@@ -11,8 +11,7 @@ Joe DeFrance (jdefrance7)
 1. Download the Arduino IDE if you do not already have it installed.
 
 2. Open a terminal and navigate to the Arduino IDE libraries directory.
-
-  * Typically found in `[User]/Documents/Arduino/libraries`.
+ * Typically found in `[User]/Documents/Arduino/libraries`.
 
 3. Type `git clone` into the terminal and then copy and paste the link provided by clicking the green `Clone or Download` button on this page.
 
