@@ -44,15 +44,18 @@ Joe DeFrance (jdefrance7)
 
 2. Create an instance of the `UAVCAN_Driver` class.
 
-3. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
+3. Create an instance of the `UAVCAN_Node` structure. (Recommended)
 
-4. Set the driver's node ID using `setId()`
+4. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
 
-5. Set the driver's bitrate using `setBitrate()`
+5. Set the driver's node ID using `setId()`
 
-6. Assign the driver's callback functions using `setCallbacks()`
+6. Set the driver's bitrate using `setBitrate()`
 
-7. Start the driver using `begin()`
+7. Assign the driver's callback functions using `setCallbacks()`
+
+8. Start the driver using `begin()`
+
 
 ### Broadcasts
 
