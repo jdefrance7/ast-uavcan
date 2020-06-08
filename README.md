@@ -90,4 +90,4 @@ int broadcast(AngularCommand* angular_command);
 
 ### Requests/Responses
 
-Requests/Responses can be sent in a similar way to Broadcasts but using the generic or specific `service()` funcitons with variable Request/Response transfer types.
+Requests and responses can be sent in a similar way to Broadcasts but using the generic or specific `service()` funcitons with variable `CanardRequest` or `CanardResponse` transfer types.
