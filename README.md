@@ -1,4 +1,4 @@
-# AST UAVCAN
+# AST-UAVCAN
 
 UAVCAN driver class for the AST-CAN485 development board sold by SparkFun.
 
