@@ -16,25 +16,25 @@ Joe DeFrance (jdefrance7)
 
 4. Add the AST-CAN485 Development Board to the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Board Installation Using Boards Manager](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
 
-5. Download the `ASTCanLib` library by following SparkFun's AST-CAN485 hookup guide section [Manual Library Installation](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
+5. Download the `ASTCanLib` library for the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Manual Library Installation](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
 
 ## Library Contents
 
 ### UAVCAN Sources
 
-`canard.h` - Canard header file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`
+`canard.h` - Canard header file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`.
 
-`canard.c` - Canard source file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`
+`canard.c` - Canard source file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`.
 
-`canard_internals.h` - Canard internal support file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`
+`canard_internals.h` - Canard internal support file from [UAVCAN/libcanard](https://github.com/UAVCAN/libcanard/tree/legacy-v0) tree `legacy-v0`.
 
 ### Custom Files
 
-`uavcan_data_types.h` - UAVCAN data type structures and information
+`uavcan_data_types.h` - UAVCAN data type structures and information.
 
-`ast-uavcan.h` - UAVCAN driver header and class declaration
+`ast-uavcan.h` - UAVCAN driver header and class declaration.
 
-`ast-uavcan.cpp` - UAVCAN driver class function definitions
+`ast-uavcan.cpp` - UAVCAN driver class function definitions.
 
 ## Using the Library
 
