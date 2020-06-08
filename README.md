@@ -56,7 +56,7 @@ Joe DeFrance (jdefrance7)
 
 ### Broadcasts
 
-Broadcasts can be sent in one of two ways:
+Broadcasts can be sent in two ways:
 
 1. Using the generic broadcast function. Please note that the inout_transfer_id must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
 
@@ -71,7 +71,7 @@ int broadcast(
 );
 ```
 
-2. Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`.
+2. Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all data type transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`, though this can be changed in their respective functions.
 
 ```c
 int broadcast(NodeStatus* node_status);
@@ -83,3 +83,4 @@ int broadcast(AngularCommand* angular_command);
 
 ### Requests/Responses
 
+Requests/Responses can be sent in a similar way to Broadcasts but using the generic or specific `service()` funcitons with variable Request/Response transfer types.
