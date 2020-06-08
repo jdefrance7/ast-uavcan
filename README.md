@@ -40,17 +40,17 @@ Joe DeFrance (jdefrance7)
 
 ### Setup
 
-1. Include the library header (`ast-uavcan.h`) in your code.
+1. Include the library header `<ast-uavcan.h>` in your sketch.
 
-2. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
+2. Create an instance of the `UAVCAN_Driver` class.
 
-3. Create an instance of the `UAVCAN_Driver` class.
+3. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
 
 4. Set the driver's node ID using `setId()`
 
 5. Set the driver's bitrate using `setBitrate()`
 
-6. Assign the driver's callbacks using `setCallbacks()`
+6. Assign the driver's callback functions using `setCallbacks()`
 
 7. Start the driver using `begin()`
 
@@ -58,7 +58,9 @@ Joe DeFrance (jdefrance7)
 
 Broadcasts can be sent in two ways:
 
-1. Using the generic broadcast function. Please note that the inout_transfer_id must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
+#### 1. Generic
+
+Using the generic broadcast function. Please note that the inout_transfer_id must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
 
 ```c
 int broadcast(
@@ -71,7 +73,9 @@ int broadcast(
 );
 ```
 
-2. Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all data type transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`, though this can be changed in their respective functions.
+#### 2. Specific
+
+Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all data type transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`, though this can be changed in their respective functions.
 
 ```c
 int broadcast(NodeStatus* node_status);
