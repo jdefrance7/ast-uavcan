@@ -1,6 +1,6 @@
 # AST-UAVCAN
 
-UAVCAN driver class for the AST-CAN485 development board sold by SparkFun.
+UAVCAN v0 driver class for the AST-CAN485 development board sold by SparkFun.
 
 ## Contributors
 
@@ -16,9 +16,9 @@ Joe DeFrance (jdefrance7)
 
 3. Type `git clone` into the terminal and then copy and paste the link provided by clicking the green `Clone or Download` button on the project's main page.
 
-4. Add the AST-CAN485 Development Board to the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Board Installation Using Boards Manager](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
+4. Add the AST-CAN485 Development Board to the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Board Installation Using Boards Manager](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854).
 
-5. Download the `ASTCanLib` library for the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Manual Library Installation](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
+5. Download the `ASTCanLib` library for the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Manual Library Installation](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854).
 
 ## Library Contents
 
@@ -46,17 +46,17 @@ Joe DeFrance (jdefrance7)
 
 2. Create an instance of the `UAVCAN_Driver` class.
 
-3. Create an instance of the `UAVCAN_Node` structure. (Recommended)
+3. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
 
-4. Define the callback handler functions `shouldAcceptTransfer` and `onTransferReceived` (see `canard.h` for details).
+4. Set the driver's node ID using `setId()`
 
-5. Set the driver's node ID using `setId()`
+5. Set the driver's bitrate using `setBitrate()`
 
-6. Set the driver's bitrate using `setBitrate()`
+6. Assign the driver's callback functions using `setCallbacks()`
 
-7. Assign the driver's callback functions using `setCallbacks()`
+7. Start the driver using `begin()`
 
-8. Start the driver using `begin()`
+8. Create and populate an instance of the `UAVCAN_Node` structure for the specific node. (Recommended)
 
 ### Polling
 
