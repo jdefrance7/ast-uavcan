@@ -12,7 +12,7 @@ Joe DeFrance (jdefrance7)
 
 2. Open a terminal and navigate to the Arduino IDE libraries directory (typically found in `[User]/Documents/Arduino/libraries`)
 
-3. Type `git clone ` into the terminal and then copy and paste the link provided by clicking the green `Clone or Download` button on this page.
+3. Type `git clone` into the terminal and then copy and paste the link provided by clicking the green `Clone or Download` button on this page.
 
 4. Add the AST-CAN485 Development Board to the Arduino IDE by following SparkFun's AST-CAN485 hookup guide section [Board Installation Using Boards Manager](https://learn.sparkfun.com/tutorials/ast-can485-hookup-guide?_ga=2.39481377.365903456.1581038177-271346267.1574810854)
 
@@ -58,7 +58,7 @@ Joe DeFrance (jdefrance7)
 
 Broadcasts can be sent in one of two ways:
 
-1. Using the generic broadcast function.
+1. Using the generic broadcast function. Please note that the inout_transfer_id must be defined outside of this function and be declared static. Because of this, you cannot mix using the generic broadcast function and specific broadcast function for the same data types. 
 
 ```c
 int broadcast(
@@ -71,7 +71,7 @@ int broadcast(
 );
 ```
 
-2. Using a specific broadcast function.
+2. Using a specific broadcast function. Please note that this function handles declaring and defining the static inout_transfer_id variable. However, this means that you cannot mix this function with the generic broadcast function for the same data types. Additionally, all transfers are currently given `CANARD_TRANSFER_PRIORITY_MEDIUM`.
 
 ```c
 int broadcast(NodeStatus* node_status);
