@@ -56,6 +56,9 @@ Joe DeFrance (jdefrance7)
 
 8. Start the driver using `begin()`
 
+### Polling
+
+Calling the `poll()` function will cause the CAN driver to attempt to read a single UAVCAN frame if available. This frame is passed internally to the Canard transfer handler and will invoke the assigned callback functions when a full transfer is received.
 
 ### Broadcasts
 
